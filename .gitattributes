@@ -1,0 +1,5 @@
+# install.sh is fetched and piped straight into `sh` on Linux servers. With CRLF
+# endings the shebang becomes "/usr/bin/env sh\r" and every run dies with an
+# unreadable "bad interpreter" error. This repo is maintained from Windows, where
+# core.autocrlf would otherwise convert it on the next commit — so pin it.
+*.sh text eol=lf
