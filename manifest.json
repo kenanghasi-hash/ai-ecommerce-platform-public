@@ -1,4 +1,5 @@
 {
+  "_comment": "The live release channel every shop reads. JSON has no comment syntax, so notes live in this key - parsers ignore fields they do not know. To point shops at your supplier directory, replace null below with the public https URL of the shop running SUPPLIER_DIRECTORY_HOST=1, e.g. https://your-shop.com - every shop follows within a day, no release needed. null means no directory, so those features stay off. npm run release rewrites this file but carries directoryUrl forward, so this edit is permanent.",
   "latest": "0.0.0",
-  "directoryUrl": "https://carry-probe-2.example"
+  "directoryUrl": null
 }
