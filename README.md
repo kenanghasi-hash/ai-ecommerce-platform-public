@@ -65,29 +65,65 @@ maintained privately; what you install is the built bundle attached to a
 
 ## Install
 
-You don't clone this repository. You deploy the **release bundle**: one
-self-contained folder with everything the server needs.
+Two ways. Pick by whether you have SSH access to your server.
+
+### Method 1 — One command (SSH / VPS)
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/kenanghasi-hash/ai-ecommerce-platform-public/main/install.sh | sh
+```
+
+Downloads the latest release, **verifies its checksum**, and unpacks it into
+`./ai-shop`. Then:
+
+```sh
+cd ai-shop && PORT=3000 node server.js
+```
+
+…and open `https://your-domain.com/install`.
+
+<details>
+<summary>Options</summary>
+
+```sh
+sh install.sh --dir /var/www/shop     # install somewhere specific
+sh install.sh --update --dir ...      # upgrade in place (keeps .env, uploads, storage)
+sh install.sh --version v1.2.0        # pin a specific version
+sh install.sh --manifest <url>        # install from a different release channel
+```
+
+The script refuses to overwrite an existing install unless you pass `--update`,
+refuses to install at all if the checksum does not match, and leaves nothing
+behind when it refuses. Prefer to read it first? It is
+[right here](./install.sh) — download it, read it, then run it.
+
+</details>
+
+### Method 2 — Upload (shared hosting, cPanel/Plesk, no SSH)
 
 **1. Download** `deploy.tar.gz` from the latest [Release](../../releases) and
-unpack it.
+unpack it on your computer.
 
-**2. Upload** the contents to your app folder on the server, by FTP or your
-hosting panel's file manager.
+**2. Upload** the contents to your app folder, by FTP or your hosting panel's
+file manager.
 
 **3. Register it as an application.** A shop is a program that must keep running,
-not static files to serve. In your hosting panel open **"Node.js" / "Setup Node.js
-App"**, point it at the uploaded folder, set the startup file to `server.js`, pick
+not static files to serve. In your panel open **"Node.js" / "Setup Node.js App"**,
+point it at the uploaded folder, set the startup file to `server.js`, pick
 Node 18+, and start it.
 
-No environment variables are needed — a fresh shop boots into setup mode.
+**4. Open `https://your-domain.com/install`.**
 
-**4. Open `https://your-domain.com/install`.** The wizard asks for your shop
-address, your MySQL details and your admin account. It creates the database
-tables, generates every secret, restarts once, and drops you into the dashboard.
-It then locks itself.
+### Either way: the wizard finishes the job
 
-**5. Configure** payments, email, products or suppliers, theme, taxes and
-shipping — all from the admin.
+It asks for your shop address, your MySQL details and your admin account, then
+creates the database tables, generates every secret, restarts once, and drops you
+into the dashboard. It locks itself afterwards.
+
+**There is nothing to configure by hand.** No environment file to write, no keys
+to paste, no update URL to set — a fresh shop is already connected to the release
+channel and the supplier directory. Payments, email, products, theme, taxes and
+shipping are all point-and-click in the admin.
 
 > **Docker instead?** The bundle also runs as a container alongside MySQL. See the
 > deployment notes included in the release.
@@ -102,19 +138,13 @@ update reversible.
 
 ## Staying up to date
 
-Add **one line** to your shop's `.env`:
+**Nothing to set up.** Every build follows this release channel out of the box, so
+your shop checks daily and shows a banner in the admin when a new version or a
+security advisory applies. The running version is in the admin sidebar.
 
-```bash
-UPDATE_MANIFEST_URL="https://github.com/kenanghasi-hash/ai-ecommerce-platform-public/releases/latest/download/manifest.json"
-```
-
-That single line does two jobs:
-
-1. **Update notifications** — your shop checks daily and shows a banner in the
-   admin dashboard when a newer version or a security advisory applies.
-2. **Supplier directory** — it also carries the address of the supplier directory,
-   so you never have to configure that separately, and it keeps working if the
-   directory ever moves.
+The same channel also tells your shop where the **supplier directory** lives, so
+that needs no configuration either — and it keeps working if the directory ever
+moves.
 
 ### Applying an update
 
@@ -129,8 +159,20 @@ Two things are deliberately true of this:
   is no upload-your-own-code path, so a compromised admin account cannot be used
   to install foreign code.
 
-Prefer doing it by hand? Upload the new bundle over the old files (keep
-`public/uploads/`), restart, then finish the database step at **Admin → Update**.
+Prefer the command line? `sh install.sh --update --dir <your-folder>` does the same
+thing, preserving your `.env`, uploads and storage. Or upload the new bundle over
+the old files by hand and finish the database step at **Admin → Update**.
+
+<details>
+<summary>Running your own release channel, or turning updates off</summary>
+
+Set `UPDATE_MANIFEST_URL` in your `.env` to point at a different manifest — useful
+if you run an independent network of shops. Set it to an empty string
+(`UPDATE_MANIFEST_URL=""`) to switch update checks off entirely; your shop then
+never contacts the channel, and you take responsibility for applying security
+releases yourself.
+
+</details>
 
 ---
 
