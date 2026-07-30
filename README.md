@@ -52,7 +52,7 @@ maintained privately; what you install is the built bundle attached to a
 | **Dashboard** | Any date range: revenue, orders, shipping, cost of goods, refunds (card vs store credit), gross profit and tax — each against the preceding period. Cost is recorded per line **at order time**, so a supplier repricing later cannot rewrite last quarter's margin. |
 | **Returns & refunds** | Return-before-refund RMA flow, per-line restock rules, refunds in kind for store-credit orders. |
 | **Admin** | Orders, products & variants, customers & store credit, categories, tickets, email templates, and settings for payments, taxes, shipping, returns, automation and sync. |
-| **Updates** | An in-dashboard banner when a new version is published here, and one-click install — see [below](#staying-up-to-date). |
+| **Updates** | An in-dashboard banner when a new version is published here, and one-click install — on a schedule you choose, and unattended if you opt in. See [below](#staying-up-to-date). |
 
 ---
 
@@ -139,12 +139,16 @@ update reversible.
 ## Staying up to date
 
 **Nothing to set up.** Every build follows this release channel out of the box, so
-your shop checks daily and shows a banner in the admin when a new version or a
-security advisory applies. The running version is in the admin sidebar.
+your shop checks daily — or as often as you like — and shows a banner in the admin
+when a new version or a security advisory applies. The running version is in the admin sidebar, and the
+time of the last check is on **Admin → Update** — so "nothing new" and "hasn't
+looked" never get confused for each other.
 
 The same channel also tells your shop where the **supplier directory** lives, so
-that needs no configuration either — and it keeps working if the directory ever
-moves.
+that needs no configuration either. It keeps working if the directory moves, and
+it keeps working if the channel itself has a bad day: your shop remembers the last
+directory it was told about, across restarts, and only a manifest it could
+actually read is allowed to change that.
 
 ### Applying an update
 
@@ -154,7 +158,9 @@ your `.env`, uploads and storage, restarts, and applies any database migrations.
 
 Two things are deliberately true of this:
 
-- **Nothing installs unattended.** You are told an update exists; you decide when.
+- **Nothing installs unattended unless you ask for it.** Out of the box you are
+  told an update exists and you choose when. Unattended installs are available,
+  but as a switch you turn on — see below.
 - **Only the checksum-verified bundle from this channel can be installed.** There
   is no upload-your-own-code path, so a compromised admin account cannot be used
   to install foreign code.
@@ -162,6 +168,23 @@ Two things are deliberately true of this:
 Prefer the command line? `sh install.sh --update --dir <your-folder>` does the same
 thing, preserving your `.env`, uploads and storage. Or upload the new bundle over
 the old files by hand and finish the database step at **Admin → Update**.
+
+### Deciding how updates reach you
+
+**Admin → Update** has three controls. Between them they decide *when* your shop
+looks and whether it acts on what it finds — never *where* it looks. Which channel
+a shop follows is fixed in the build on purpose: it is exactly the setting someone
+who got into your admin would want to repoint at their own code.
+
+| Control | What it does |
+|---|---|
+| **Check now** | Looks immediately rather than waiting for the next scheduled check, ignoring anything already cached — so it tells you the truth the moment a release is published, instead of repeating what it knew an hour ago. |
+| **Check automatically** | Hourly, every 6 hours, daily (the default), or weekly. A change takes effect at once. Below an hour would only hammer the channel; above a week, a security advisory could sit unseen longer than most incidents last. |
+| **Install updates automatically** | **Off by default.** Turn it on and your shop installs new releases itself instead of waiting for the click. It grants nothing extra — same channel, same checksum, same bundle the button installs; it only removes the click. What it does do is restart your shop at a moment you did not choose, which is why it is a decision to make rather than inherit. The outcome of the last automatic install appears on the same page, so a failure is visible without reading server logs. |
+
+If you turn automatic installs on, make sure the backups described under
+[Keep a backup](#keep-a-backup) are actually happening — an update you did not
+schedule is one you are not standing in front of.
 
 <details>
 <summary>Running your own release channel, or turning updates off</summary>
@@ -171,6 +194,10 @@ if you run an independent network of shops. Set it to an empty string
 (`UPDATE_MANIFEST_URL=""`) to switch update checks off entirely; your shop then
 never contacts the channel, and you take responsibility for applying security
 releases yourself.
+
+That opt-out outranks everything, including **Check now** — the button will tell
+you checks are switched off rather than quietly contacting the channel anyway.
+"Never contact the channel" has to mean never.
 
 </details>
 
