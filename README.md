@@ -33,6 +33,7 @@ maintained privately; what you install is the built bundle attached to a
 | **Storefront** | Catalog, cart, checkout via **Stripe** and **PayPal**. Guest checkout, order tracking, support tickets, store credit. |
 | **Payment model** | Authorize-then-capture on both rails — your customer is charged only *after* a supplier accepts the order. |
 | **Taxes** | EU VAT-inclusive decomposition (store-wide or per-category, proportional shipping VAT) **and** US sales tax added on top, per registered state, destination-based. |
+| **Currency** | Sell in EUR, USD, GBP, CHF, SEK, NOK, DKK, PLN, CZK, RON or BGN. Orders you have already taken keep the currency they were placed in and are never re-valued, and the shop refuses to switch while a customer still holds credit or a partner balance is unsettled. Prices are written the way your shop's language writes them. |
 | **Shipping** | Destination zones with per-zone rates and free-over thresholds. Optionally those zones become the countries you ship to *at all* — checkout refuses the rest before taking money. Tracking numbers become clickable carrier links. |
 | **Digital products** | Watermarked PDF delivery behind signed, download-limited links. |
 | **CMS & theming** | Blog, pages, media library, switchable storefront themes. |
@@ -50,6 +51,7 @@ maintained privately; what you install is the built bundle attached to a
 | | |
 |---|---|
 | **Dashboard** | Any date range: revenue, orders, shipping, cost of goods, refunds (card vs store credit), gross profit and tax — each against the preceding period. Cost is recorded per line **at order time**, so a supplier repricing later cannot rewrite last quarter's margin. |
+| **Accounting exports** | Give your bookkeeper a file, not a spreadsheet. **DATEV** (`Buchungsstapel`, SKR03 or SKR04, one posting per order split per tax rate) and **Xero** (sales invoices, plus a second credit-note file when the period contains refunds). Both cover the period shown on the dashboard, and both **stop rather than guess** — a tax rate you have not mapped to an account, a range crossing a year end, or a period holding two currencies produces an explanation instead of a file that looks correct. |
 | **Returns & refunds** | Return-before-refund RMA flow, per-line restock rules, refunds in kind for store-credit orders. |
 | **Admin** | Orders, products & variants, customers & store credit, categories, tickets, email templates, and settings for payments, taxes, shipping, returns, automation and sync. |
 | **Updates** | An in-dashboard banner when a new version is published here, and one-click install — on a schedule you choose, and unattended if you opt in. See [below](#staying-up-to-date). |
@@ -210,18 +212,23 @@ wholesale prices. It is off by default.
 
 1. **Enable it** — Admin → Settings → Reseller program.
 2. **Find suppliers** — Admin → Suppliers → *Peer suppliers* lists shops in the
-   directory. Send a connection request; once they approve, credentials are
-   exchanged automatically and their catalog becomes importable like any other
-   supplier.
+   directory, each showing the currency it trades in when that differs from yours.
+   Send a connection request; once they approve, credentials are exchanged
+   automatically and their catalog becomes importable like any other supplier.
 3. **Or supply others** — tick *"List my shop in the supplier directory"*. Your
    listing is reviewed before it becomes visible.
 
-Two things worth knowing:
+Three things worth knowing:
 
 - **The directory only lists.** Connections, orders, and money always run directly
   between the two shops. Nothing routes through the directory operator.
 - **You approve every connection.** A shop finding you in the directory cannot
   order from you until you accept it.
+- **A supplier in another currency is fine, and stays labelled.** Its costs are
+  kept in the currency it quoted — never converted behind your back — so when you
+  import, you set the retail price yourself instead of the shop inventing one from
+  a rate. The same applies to Printful, Printify, CJdropshipping and AliExpress,
+  which all quote in USD.
 
 Peer orders settle by **card on file** (saved once through a secure Stripe setup
 page and charged as each order confirms) or on an invoiced ledger, whichever the
