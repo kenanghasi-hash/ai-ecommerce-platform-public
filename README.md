@@ -53,7 +53,8 @@ maintained privately; what you install is the built bundle attached to a
 | **Dashboard** | Any date range: revenue, orders, shipping, cost of goods, refunds (card vs store credit), gross profit and tax — each against the preceding period. Cost is recorded per line **at order time**, so a supplier repricing later cannot rewrite last quarter's margin. |
 | **Accounting exports** | Give your bookkeeper a file, not a spreadsheet. **DATEV** (`Buchungsstapel`, SKR03 or SKR04, one posting per order split per tax rate) and **Xero** (sales invoices, plus a second credit-note file when the period contains refunds). Both cover the period shown on the dashboard, and both **stop rather than guess** — a tax rate you have not mapped to an account, a range crossing a year end, or a period holding two currencies produces an explanation instead of a file that looks correct. |
 | **Returns & refunds** | Return-before-refund RMA flow, per-line restock rules, refunds in kind for store-credit orders. |
-| **Admin** | Orders, products & variants, customers & store credit, categories, tickets, email templates, and settings for payments, taxes, shipping, returns, automation and sync. |
+| **Admin** | Orders, products & variants, customers & store credit, categories, tickets, email templates, and settings for payments, taxes, shipping, returns, automation and sync. Every list filters straight from its column headers — pick values, type to search, sort — and the orders CSV export shows exactly the columns the list shows. |
+| **System map** | A live diagram of your whole shop under Settings: every feature as a node with an on/off light, a live fact ("3 suppliers connected", "test keys"), and a click-through to the screen that controls it. Prints to PDF. |
 | **Updates** | An in-dashboard banner when a new version is published here, and one-click install — on a schedule you choose, and unattended if you opt in. See [below](#staying-up-to-date). |
 
 ---
@@ -212,7 +213,8 @@ wholesale prices. It is off by default.
 
 1. **Enable it** — Admin → Settings → Reseller program.
 2. **Find suppliers** — Admin → Suppliers → *Peer suppliers* lists shops in the
-   directory, each showing the currency it trades in when that differs from yours.
+   directory, each showing the currency it trades in and its payment terms —
+   card on file, or on account — before you send a request.
    Send a connection request; once they approve, credentials are exchanged
    automatically and their catalog becomes importable like any other supplier.
 3. **Or supply others** — tick *"List my shop in the supplier directory"*. Your
@@ -229,6 +231,11 @@ Three things worth knowing:
   import, you set the retail price yourself instead of the shop inventing one from
   a rate. The same applies to Printful, Printify, CJdropshipping and AliExpress,
   which all quote in USD.
+- **Card terms protect both sides.** A supplier that charges by card on file
+  keeps your imported items off your storefront until your card is actually
+  saved with them — so a customer can never buy something you cannot source.
+  Extending "on account" terms is a per-shop decision behind an explicit
+  warning, and every change of terms is recorded on the ledger.
 
 Peer orders settle by **card on file** (saved once through a secure Stripe setup
 page and charged as each order confirms) or on an invoiced ledger, whichever the
